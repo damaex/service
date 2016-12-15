@@ -1,6 +1,7 @@
 #include <iostream>
-#include "Service.h"
 #include <thread>
+
+#include "Service.h"
 
 Service *service = NULL;
 

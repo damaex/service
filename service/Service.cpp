@@ -306,7 +306,8 @@ int Service::getExitCode() {
 #ifdef _WIN32
     return static_cast<int>(this->p_stat.dwWin32ExitCode);
 #else
-    //TODO
+    //TODO: Unix
+    return 1;
 #endif
 }
 

@@ -1,10 +1,10 @@
 #include "IServiceRunner.h"
 
 #ifdef _WIN32
-#include <Windows.h>
 
 int IServiceRunner::Init(DWORD argc, LPTSTR* argv) { return NO_ERROR; }
 void IServiceRunner::OnUserControl(DWORD control) {}
+
 #endif
 
 int IServiceRunner::OnPause() { return NO_ERROR; }
