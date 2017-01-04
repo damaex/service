@@ -155,10 +155,10 @@ bool Service::install() {
             NULL
     );
 
-    bool bRetval = true;
+    bool ret = true;
     if (schSrv == NULL) {
         this->p_err = static_cast<int>(::GetLastError());
-        bRetval = false;
+        ret = false;
     } else
         this->p_runner->Install(); //== overload to add registry entries if needed
 
@@ -166,9 +166,9 @@ bool Service::install() {
     CloseServiceHandle(schSrv);
     CloseServiceHandle(schSCMgr);
 
-    return bRetval;
+    return ret;
 #else
-    //TODO
+    //TODO: Unix
     //check if init or systemd
     //install accordingly
     //example: http://orientdb.com/docs/2.1/Unix-Service.html
@@ -212,7 +212,7 @@ bool Service::uninstall() {
 
     return bRetval;
 #else
-    //TODO
+    //TODO: Unix
     //check if init or systemd
     //uninstall accordingly
     //example: http://orientdb.com/docs/2.1/Unix-Service.html
@@ -238,7 +238,7 @@ bool Service::isInstalled() {
 
     return bResult;
 #else
-    //TODO
+    //TODO: Unix
     //check if init or systemd
     //example: http://orientdb.com/docs/2.1/Unix-Service.html
     //get if installed in the system

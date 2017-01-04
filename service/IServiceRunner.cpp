@@ -1,5 +1,9 @@
 #include "IServiceRunner.h"
 
+#if !defined(_WIN32)
+#define NO_ERROR 0
+#endif
+
 #ifdef _WIN32
 
 int IServiceRunner::Init(DWORD argc, LPTSTR* argv) { return NO_ERROR; }

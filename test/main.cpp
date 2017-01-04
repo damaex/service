@@ -50,11 +50,15 @@ int main (int argc, char *argv[])
     service = new Service(new Runner());
 #endif
 
+    std::string functional;
+    if(argc >=1)
+        functional = argv[1];
+
     if( argc <= 1)
         service->start();
-    else if( stricmp( argv[1], "-i") == 0 )
+    else if(functional == "-i")
         service->install();
-    else if( stricmp( argv[1], "-u") == 0 )
+    else if(functional == "-u")
         service->uninstall();
 
     int exitcode = service->getExitCode();
