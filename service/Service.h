@@ -1,5 +1,5 @@
-#ifndef SERVICE_H
-#define SERVICE_H
+#ifndef SERVICE_SERVICE_H
+#define SERVICE_SERVICE_H
 
 #include "IServiceRunner.h"
 
@@ -50,4 +50,4 @@ public:
 };
 
 
-#endif //SERVICE_H
+#endif //SERVICE_SERVICE_H

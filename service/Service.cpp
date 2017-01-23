@@ -3,15 +3,9 @@
 #ifdef _WIN32
 #else
 
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <unistd.h>
-#include <syslog.h>
-#include <cstring>
 
 #endif
 
@@ -247,6 +241,8 @@ bool Service::isInstalled() {
 }
 
 int Service::start() {
+    this->p_runner->getLog()->writeLine("starting service");
+
 #ifdef _WIN32
     this->p_dispatchTable[0].lpServiceName = this->p_name;     //== Note: these
     this->p_dispatchTable[0].lpServiceProc = this->p_fpSrvMain; //   are pointers
@@ -257,33 +253,28 @@ int Service::start() {
         return this->p_err;
     }
 
-    return NO_ERROR;
+    return SERVICE_NO_ERROR;
 #else
-    setlogmask(LOG_UPTO(LOG_NOTICE));
-    openlog(this->p_runner->getName().c_str(), LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID, LOG_USER);
-
-    syslog(LOG_INFO, "Entering Daemon");
-
     pid_t pid, sid;
 
    //Fork the Parent Process
     pid = fork();
 
-    if (pid < 0) { exit(EXIT_FAILURE); }
+    if (pid < 0) { exit(SERVICE_ERROR); }
 
     //We got a good pid, Close the Parent Process
-    if (pid > 0) { exit(EXIT_SUCCESS); }
+    if (pid > 0) { exit(SERVICE_NO_ERROR); }
 
     //Change File Mask
     umask(0);
 
     //Create a new Signature Id for our child
     sid = setsid();
-    if (sid < 0) { exit(EXIT_FAILURE); }
+    if (sid < 0) { exit(SERVICE_ERROR); }
 
     //Change Directory
     //If we cant find the directory we exit with failure.
-    if ((chdir("/")) < 0) { exit(EXIT_FAILURE); }
+    if ((chdir("/")) < 0) { exit(SERVICE_ERROR); }
 
     //Close Standard File Descriptors
     close(STDIN_FILENO);
@@ -291,14 +282,9 @@ int Service::start() {
     close(STDERR_FILENO);
 
     //----------------
-    //Main Process
+    //Main Process with return value
     //----------------
-    this->p_runner->Run();
-
-    //Close the log
-    closelog ();
-
-    return EXIT_SUCCESS;
+    return this->p_runner->Run();
 #endif
 }
 

@@ -1,5 +1,6 @@
 set(service_FILES
-        Service.cpp Service.h
-        IServiceRunner.cpp IServiceRunner.h)
+        IServiceRunner.cpp IServiceRunner.h
+        Log.cpp Log.h
+        Service.cpp Service.h)
 
 add_library(service STATIC ${service_FILES})

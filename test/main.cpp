@@ -29,12 +29,14 @@ public:
 
     int Run(){
         this->p_running = true;
+        int i = 0;
 
         while (this->p_running){
             std::this_thread::sleep_for(std::chrono::seconds(3));
+            this->getLog()->writeError("Runner", "Run", i++);
         }
 
-        return 0;
+        return EXIT_SUCCESS;
     }
 
     void OnStop(){
@@ -51,7 +53,7 @@ int main (int argc, char *argv[])
 #endif
 
     std::string functional;
-    if(argc >=1)
+    if(argc >=2)
         functional = argv[1];
 
     if( argc <= 1)
