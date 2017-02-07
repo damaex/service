@@ -2,6 +2,7 @@
 
 bool Log::logFolderExists() {
     //TODO
+    return false;
 }
 
 void Log::createLogFolder() {
@@ -11,7 +12,7 @@ void Log::createLogFolder() {
 }
 
 std::string Log::getDateTimeString() {
-
+    return "";
 }
 
 std::string Log::getNewLine() {
