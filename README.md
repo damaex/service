@@ -4,7 +4,7 @@
 
 ##features
 * Windows: Win32 Service
-* Unix: Demon
+* Unix: Daemon
 * cmake
 
 ##TODO
