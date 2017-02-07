@@ -1,6 +1,7 @@
-configuration:
-  - Debug
-  - Release
+environment:
+  matrix:
+    - CMAKE_BUILD_TYPE: Debug
+    - CMAKE_BUILD_TYPE: Release
 
 platform:
   - x64
@@ -13,5 +14,5 @@ build_script:
   - cmd: cd C:\projects\service
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%configuration% ..
+  - cmd: cmake -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ..
   - cmd: msbuild service.sln
