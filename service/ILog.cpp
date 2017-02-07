@@ -27,9 +27,15 @@ std::string ILog::getCurrentTime(std::string mod) {
     auto now = std::chrono::system_clock::now();
     auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
-    std::stringstream ss;
+    /*std::stringstream ss;
     ss << std::put_time(std::localtime(&in_time_t), mod.c_str());
-    return ss.str();
+    return ss.str();*/
+
+    char foo[24];
+    if(0 < strftime(foo, sizeof(foo), mod.c_str(), std::localtime(&in_time_t)))
+        return std::string(foo);
+    else
+        return "";
 }
 
 void ILog::writeLine(std::string text) {
