@@ -4,7 +4,9 @@ set(SOURCE_FILES
 find_package (Threads)
 
 include_directories(${CMAKE_SOURCE_DIR}/service)
-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static -lpthread")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static -lpthread")
+endif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 add_executable(serviceTest ${SOURCE_FILES})
 target_link_libraries(serviceTest service)
