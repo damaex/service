@@ -1,5 +1,5 @@
 platform:
-  - Any CPU
+  - Win32
   - x64
 
 configuration:
@@ -14,7 +14,7 @@ build_script:
   - cmd: cd C:\projects\service
   - cmd: mkdir build
   - cmd: cd build
-  - cmd: if "%platform%"=="Any CPU" set CMAKE_GENERATOR=Visual Studio 14 2015
+  - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR=Visual Studio 14 2015
   - cmd: if "%platform%"=="x64" set CMAKE_GENERATOR=Visual Studio 14 2015 Win64
   - cmd: cmake -G"%CMAKE_GENERATOR%" ..
   - cmd: msbuild service.sln /p:Configuration=%configuration% /p:Platform=%platform%
