@@ -1,10 +1,9 @@
 environment:
   matrix:
-    - CMAKE_GENERATOR: Visual Studio 14 2015 Win64
-    - CMAKE_GENERATOR: Visual Studio 14 2015
-
-platform:
-  - x64
+    - ARCH: x86
+    - ARCH: x64
+    - MSBUILD_CONFIGURATION: Debug
+    - MSBUILD_CONFIGURATION: Release
 
 init:
   - cmd: cmake --version
@@ -14,5 +13,7 @@ build_script:
   - cmd: cd C:\projects\service
   - cmd: mkdir build
   - cmd: cd build
+  - cmd: if "%ARCH%"=="x86" set CMAKE_GENERATOR=Visual Studio 14 2015
+  - cmd: if "%ARCH%"=="x64" set CMAKE_GENERATOR=Visual Studio 14 2015 Win64
   - cmd: cmake -G"%CMAKE_GENERATOR%" ..
-  - cmd: msbuild service.sln
+  - cmd: msbuild service.sln /p:Configuration=%MSBUILD_CONFIGURATION% /p:Platform=%ARCH%
