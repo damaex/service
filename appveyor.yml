@@ -7,6 +7,7 @@ init:
   - cmd: msbuild /version
 
 build_script:
+  - cmd: cd C:\projects\service
   - cmd: mkdir build
   - cmd: cd build
   - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015
