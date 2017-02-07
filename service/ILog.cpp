@@ -32,7 +32,15 @@ std::string ILog::getCurrentTime(std::string mod) {
     return ss.str();*/
 
     char foo[24];
-    if(0 < strftime(foo, sizeof(foo), mod.c_str(), std::localtime(&in_time_t)))
+    struct tm timeinfo;
+
+#ifdef _WIN32
+    localtime_s(&timeinfo, &in_time_t);
+#else
+    timeinfo = *localtime(&in_time_t);
+#endif
+
+    if(0 < strftime(foo, sizeof(foo), mod.c_str(), &timeinfo))
         return std::string(foo);
     else
         return "";

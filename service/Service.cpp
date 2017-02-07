@@ -15,7 +15,11 @@ Service::Service(IServiceRunner *runner, LPSERVICE_MAIN_FUNCTION funp_srvmain, L
         : p_runner(runner), p_fpSrvMain(funp_srvmain), p_fpSrvControl(funp_ctrl) {
     //== copy the service name - if needed add UNICODE support here
     memset(this->p_name, 0, sizeof(this->p_name));
+#ifdef _WIN32
+    strncpy_s(this->p_name, sizeof(this->p_name), this->p_runner->getName().c_str(), sizeof(this->p_name)-1);
+#else
     strncpy(this->p_name, this->p_runner->getName().c_str(), sizeof(this->p_name)-1);
+#endif
 
     //== clear the status flags
     this->p_isStarted = false;
@@ -292,8 +296,7 @@ int Service::getExitCode() {
 #ifdef _WIN32
     return static_cast<int>(this->p_stat.dwWin32ExitCode);
 #else
-    //TODO: Unix
-    return 1;
+    return SERVICE_ERROR;
 #endif
 }
 
