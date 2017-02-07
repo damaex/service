@@ -1,7 +1,7 @@
 #ifndef SERVICE_ISERVICERUNNER_H
 #define SERVICE_ISERVICERUNNER_H
 
-#include "Log.h"
+#include "ILog.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -9,8 +9,11 @@
 
 class IServiceRunner {
 private:
-    Log     p_log;
+    ILog* p_log = NULL;
 public:
+    IServiceRunner(ILog* log);
+    virtual ~IServiceRunner();
+
     virtual std::string getName() = 0;
     virtual int Run() = 0;
 
@@ -30,7 +33,7 @@ public:
     virtual void Install();
     virtual void UnInstall();
 
-    Log* getLog();
+    ILog* getLog();
 };
 
 #endif //SERVICE_ISERVICERUNNER_H

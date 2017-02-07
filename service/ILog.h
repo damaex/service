@@ -1,22 +1,26 @@
-#ifndef SERVICE_LOG_H
-#define SERVICE_LOG_H
+#ifndef SERVICE_ILOG_H
+#define SERVICE_ILOG_H
+
+#include <string>
+#include "Semaphore.h"
 
 #define SERVICE_NO_ERROR    0
 #define SERVICE_ERROR       1
 
-#include <string>
-#include <exception>
-
-class Log {
+class ILog {
 private:
-    bool logFolderExists();
-    void createLogFolder();
-    std::string getDateTimeString();
-    std::string getNewLine();
+    Semaphore p_semaphore;
 
-    void checkLogFile();
+protected:
+    virtual void writeOut(std::string text);
+
 public:
-    Log();
+    virtual ~ILog() {}
+
+    std::string getNewLine();
+    std::string getCurrentTimeAndDate();
+    std::string getCurrentDate();
+    std::string getCurrentTime(std::string mod);
 
     void writeLine(std::string text);
     void write(std::string text);
@@ -26,5 +30,4 @@ public:
     void writeError(std::string className, std::string functionName, std::exception& e);
 };
 
-
-#endif //SERVICE_LOG_H
+#endif //SERVICE_ILOG_H

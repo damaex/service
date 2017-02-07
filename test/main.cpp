@@ -2,6 +2,7 @@
 #include <thread>
 
 #include "Service.h"
+#include "Log.h"
 
 Service *service = NULL;
 
@@ -21,7 +22,7 @@ class Runner : public IServiceRunner {
 private:
     bool p_running;
 public:
-    Runner() : p_running(false) {}
+    Runner() : IServiceRunner(new Log()), p_running(false) {}
 
     std::string getName(){
         return "MyService";

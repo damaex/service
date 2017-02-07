@@ -1,4 +1,5 @@
 set(SOURCE_FILES
+        Log.cpp Log.h
         main.cpp)
 
 find_package (Threads)
