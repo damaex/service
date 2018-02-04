@@ -2,6 +2,7 @@
 #define SERVICE_ISERVICERUNNER_H
 
 #include "ILog.h"
+#include <memory>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -9,10 +10,9 @@
 
 class IServiceRunner {
 private:
-    ILog* p_log = NULL;
+    std::shared_ptr<ILog> p_log = nullptr;
 public:
-    IServiceRunner(ILog* log);
-    virtual ~IServiceRunner();
+    IServiceRunner(std::shared_ptr<ILog> log);
 
     virtual std::string getName() = 0;
     virtual int Run() = 0;
@@ -33,7 +33,7 @@ public:
     virtual void Install();
     virtual void UnInstall();
 
-    ILog* getLog();
+    std::shared_ptr<ILog> getLog();
 };
 
 #endif //SERVICE_ISERVICERUNNER_H

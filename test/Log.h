@@ -19,17 +19,17 @@ private:
 
     bool logFolderExists();
 
-    bool logFileExists(std::string date);
+    bool logFileExists(const std::string &date);
 
     void checkLogFile();
 
     std::string getPathDelimeter();
 
-    std::string getLogFilePathForDate(std::string date);
+    std::string getLogFilePathForDate(const std::string &date);
 
     std::string getExecutablePath();
 
-    void writeOut(std::string text);
+    void writeOut(const std::string &text);
 
 public:
     Log();

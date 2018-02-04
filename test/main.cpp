@@ -4,7 +4,7 @@
 #include "Service.h"
 #include "Log.h"
 
-Service *service = NULL;
+std::shared_ptr<Service> service = NULL;
 
 #ifdef _WIN32
 void WINAPI serviceMain(DWORD ac, LPTSTR* av)
@@ -22,7 +22,7 @@ class Runner : public IServiceRunner {
 private:
     bool p_running;
 public:
-    Runner() : IServiceRunner(new Log()), p_running(false) {}
+    Runner(std::shared_ptr<ILog> log) : IServiceRunner(log), p_running(false) {}
 
     std::string getName(){
         return "MyService";
@@ -47,10 +47,13 @@ public:
 
 int main (int argc, char *argv[])
 {
+    std::shared_ptr<ILog> log = std::make_shared<Log>();
+    std::shared_ptr<IServiceRunner> run = std::make_shared<Runner>(log);
+
 #ifdef _WIN32
-    service = new Service(new Runner(), serviceMain, serviceControl);
+    service = std::make_shared<Service>(run, serviceMain, serviceControl);
 #else
-    service = new Service(new Runner());
+    service = std::make_shared<Service>(run);
 #endif
 
     std::string functional;
@@ -64,8 +67,5 @@ int main (int argc, char *argv[])
     else if(functional == "-u")
         service->uninstall();
 
-    int exitcode = service->getExitCode();
-    delete service;
-
-    return exitcode;
+    return service->getExitCode();
 }

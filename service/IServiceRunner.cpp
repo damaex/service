@@ -1,12 +1,7 @@
 #include "IServiceRunner.h"
 
-IServiceRunner::IServiceRunner(ILog* log)
+IServiceRunner::IServiceRunner(std::shared_ptr<ILog> log)
         : p_log(log) {}
-
-IServiceRunner::~IServiceRunner() {
-    if(!this->p_log)
-        delete this->p_log;
-}
 
 #ifdef _WIN32
 
@@ -43,9 +38,6 @@ void IServiceRunner::Install() {}
 
 void IServiceRunner::UnInstall() {}
 
-ILog* IServiceRunner::getLog() {
-    if(!this->p_log)
-        this->p_log = new ILog();
-
+std::shared_ptr<ILog> IServiceRunner::getLog() {
     return this->p_log;
 }

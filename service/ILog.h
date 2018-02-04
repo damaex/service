@@ -12,7 +12,7 @@ private:
     Semaphore p_semaphore;
 
 protected:
-    virtual void writeOut(std::string text);
+    virtual void writeOut(const std::string &text);
 
 public:
     virtual ~ILog() {}
@@ -20,14 +20,14 @@ public:
     std::string getNewLine();
     std::string getCurrentTimeAndDate();
     std::string getCurrentDate();
-    std::string getCurrentTime(std::string mod);
+    std::string getCurrentTime(const std::string &mod);
 
-    void writeLine(std::string text);
-    void write(std::string text);
+    void writeLine(const std::string &text);
+    void write(const std::string &text);
 
-    void writeError(std::string className, std::string functionName, std::string errorText);
-    void writeError(std::string className, std::string functionName, int errorCode);
-    void writeError(std::string className, std::string functionName, std::exception& e);
+    void writeError(const std::string &className, const std::string &functionName, const std::string &errorText);
+    void writeError(const std::string &className, const std::string &functionName, int errorCode);
+    void writeError(const std::string &className, const std::string &functionName, std::exception& e);
 };
 
 #endif //SERVICE_ILOG_H

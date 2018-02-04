@@ -1,2 +1,4 @@
 cmake-build-debug/
+msvc-build-debug/
+ubuntu-build-debug/
 .idea/

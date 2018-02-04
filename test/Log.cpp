@@ -15,8 +15,10 @@ void Log::createLogsFolder() {
             std::cout << "Log Folder could not be created" << std::endl;
         }
 #else
-        //TODO: unix check
         int status = mkdir(this->getLogFolder().c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        if (status == -1) {
+            std::cout << "Log Folder could not be created" << std::endl;
+        }
 #endif
     }
 }
@@ -40,7 +42,7 @@ bool Log::logFolderExists() {
     return ret;
 }
 
-bool Log::logFileExists(std::string date) {
+bool Log::logFileExists(const std::string &date) {
     std::string path = this->getLogFilePathForDate(date);
 
     struct stat buf;
@@ -92,7 +94,7 @@ std::string Log::getPathDelimeter() {
 #endif
 }
 
-std::string Log::getLogFilePathForDate(std::string date) {
+std::string Log::getLogFilePathForDate(const std::string &date) {
     return this->getLogFolder() + date + "." + this->p_fileEnding;
 }
 
@@ -112,7 +114,7 @@ std::string Log::getExecutablePath() {
 #endif
 }
 
-void Log::writeOut(std::string text) {
+void Log::writeOut(const std::string &text) {
     this->createLogsFolder();
     this->checkLogFile();
 

@@ -10,8 +10,8 @@
 
 #ifdef _WIN32
 
-Service::Service(IServiceRunner *runner, LPSERVICE_MAIN_FUNCTION funp_srvmain, LPHANDLER_FUNCTION funp_ctrl)
-        : p_runner(runner), p_fpSrvMain(funp_srvmain), p_fpSrvControl(funp_ctrl) {
+Service::Service(std::shared_ptr<IServiceRunner> runner, LPSERVICE_MAIN_FUNCTION funp_srvmain, LPHANDLER_FUNCTION funp_ctrl)
+        : p_runner(runner), p_fpSrvMain(funp_srvmain), p_fpSrvControl(funp_ctrl), p_err(SERVICE_NO_ERROR){
     //== copy the service name - if needed add UNICODE support here
     memset(this->p_name, 0, sizeof(this->p_name));
     strncpy_s(this->p_name, sizeof(this->p_name), this->p_runner->getName().c_str(), sizeof(this->p_name)-1);
@@ -104,13 +104,12 @@ void Service::ChangeStatus(DWORD state, DWORD checkpoint, DWORD waithint) {
 
 #else
 
-Service::Service(IServiceRunner* runner) : p_runner(runner) {}
+Service::Service(std::shared_ptr<IServiceRunner> runner) : p_runner(runner) {}
 
 #endif
 
 Service::~Service() {
     this->p_runner->OnShutdown();
-    delete this->p_runner;
 }
 
 bool Service::install() {
@@ -273,7 +272,7 @@ int Service::start() {
 
     //Change Directory
     //If we cant find the directory we exit with failure.
-    if ((chdir("/")) < 0) { exit(SERVICE_ERROR); }
+    if (chdir("/") < 0) { exit(SERVICE_ERROR); }
 
     //Close Standard File Descriptors
     close(STDIN_FILENO);
@@ -288,6 +287,9 @@ int Service::start() {
 }
 
 int Service::getExitCode() {
+    if (this->p_err == SERVICE_NO_ERROR)
+        return SERVICE_NO_ERROR;
+
 #ifdef _WIN32
     return static_cast<int>(this->p_stat.dwWin32ExitCode);
 #else
