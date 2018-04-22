@@ -12,7 +12,7 @@ class IServiceRunner {
 private:
     std::shared_ptr<ILog> p_log = nullptr;
 public:
-    IServiceRunner(std::shared_ptr<ILog> log);
+    explicit IServiceRunner(std::shared_ptr<ILog> log);
 
     virtual std::string getName() = 0;
     virtual int Run() = 0;

@@ -1,8 +1,6 @@
 #include "Semaphore.h"
 #include <thread>
 
-Semaphore::Semaphore() {}
-
 Semaphore::~Semaphore() {
     if (this->isAquired())
         this->release();

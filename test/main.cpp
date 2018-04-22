@@ -22,13 +22,13 @@ class Runner : public IServiceRunner {
 private:
     bool p_running;
 public:
-    Runner(std::shared_ptr<ILog> log) : IServiceRunner(log), p_running(false) {}
+    explicit Runner(std::shared_ptr<ILog> log) : IServiceRunner(log), p_running(false) {}
 
-    std::string getName(){
+    std::string getName() override {
         return "MyService";
     }
 
-    int Run(){
+    int Run() override {
         this->p_running = true;
         int i = 0;
 
@@ -40,7 +40,7 @@ public:
         return EXIT_SUCCESS;
     }
 
-    void OnStop(){
+    void OnStop() override {
         this->p_running = false;
     }
 };

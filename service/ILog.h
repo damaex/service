@@ -15,8 +15,6 @@ protected:
     virtual void writeOut(const std::string &text);
 
 public:
-    virtual ~ILog() {}
-
     std::string getNewLine();
     std::string getCurrentTimeAndDate();
     std::string getCurrentDate();

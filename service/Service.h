@@ -23,18 +23,14 @@ private:
 
 public:
 #ifdef _WIN32
-
 	Service(std::shared_ptr<IServiceRunner> runner, LPSERVICE_MAIN_FUNCTION funp_srvmain, LPHANDLER_FUNCTION funp_ctrl);
 
 	int service(DWORD argc, LPTSTR* argv);
 	void control(DWORD opcode);
 
 	void ChangeStatus(DWORD state, DWORD checkpoint = (DWORD)0, DWORD waithint = (DWORD)0);
-
 #else
-
 	Service(std::shared_ptr<IServiceRunner> runner);
-
 #endif
 
 	~Service();

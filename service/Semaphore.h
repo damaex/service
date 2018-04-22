@@ -11,7 +11,7 @@ private:
     long long getMilliseconds();
 
 public:
-    Semaphore();
+    Semaphore() = default;
 
     ~Semaphore();
 

@@ -29,7 +29,7 @@ private:
 
     std::string getExecutablePath();
 
-    void writeOut(const std::string &text);
+    void writeOut(const std::string &text) override;
 
 public:
     Log();
