@@ -15,10 +15,10 @@ class Log : public service::ILog {
 private:
     std::ofstream p_out;
 
-    std::string p_logFolderName;
+    std::string p_logFolderName = "logs";
     std::string p_fileName;
     std::string p_lastDate;
-    std::string p_fileEnding;
+    std::string p_fileEnding = "log";
 
     void createLogsFolder() {
         if (!this->logFolderExists()) {

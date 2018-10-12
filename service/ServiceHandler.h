@@ -40,10 +40,12 @@ namespace service {
 
 			if (argc <= 1)
 				server->start();
-			else if (functional == "-i")
+			else if (functional == "install" || functional == "-i")
 				server->install();
-			else if (functional == "-u")
+			else if (functional == "uninstall" || functional == "-u")
 				server->uninstall();
+			else if (functional == "no-service" || functional == "-n")
+				return this->p_runner->Run();
 
 			return server->getExitCode();
 		}
