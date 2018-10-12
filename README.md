@@ -6,5 +6,6 @@
 - [x] Windows: Win32 Service
 - [x] Unix: Daemon
 - [x] cmake
+- [x] header only
 - [ ] Unix bash commands
 - [ ] install as service on unix
