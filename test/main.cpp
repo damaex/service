@@ -1,28 +1,13 @@
-#include <iostream>
-#include <thread>
-
-#include "Service.h"
+#include "ServiceHandler.h"
 #include "Log.h"
 
-std::shared_ptr<Service> service = NULL;
-
-#ifdef _WIN32
-void WINAPI serviceMain(DWORD ac, LPTSTR* av)
-{
-    service->service(ac, av);
-}
-
-void WINAPI serviceControl(DWORD opcode)
-{
-    service->control(opcode);
-}
-#endif
-
-class Runner : public IServiceRunner {
+class Runner : public service::IServiceRunner {
 private:
     bool p_running;
+
 public:
-    explicit Runner(std::shared_ptr<ILog> log) : IServiceRunner(log), p_running(false) {}
+    explicit Runner()
+            : IServiceRunner(std::make_shared<Log>()), p_running(false) {}
 
     std::string getName() override {
         return "MyService";
@@ -32,7 +17,7 @@ public:
         this->p_running = true;
         int i = 0;
 
-        while (this->p_running){
+        while (this->p_running) {
             std::this_thread::sleep_for(std::chrono::seconds(3));
             this->getLog()->writeError("Runner", "Run", i++);
         }
@@ -45,27 +30,7 @@ public:
     }
 };
 
-int main (int argc, char *argv[])
-{
-    std::shared_ptr<ILog> log = std::make_shared<Log>();
-    std::shared_ptr<IServiceRunner> run = std::make_shared<Runner>(log);
-
-#ifdef _WIN32
-    service = std::make_shared<Service>(run, serviceMain, serviceControl);
-#else
-    service = std::make_shared<Service>(run);
-#endif
-
-    std::string functional;
-    if(argc >=2)
-        functional = argv[1];
-
-    if( argc <= 1)
-        service->start();
-    else if(functional == "-i")
-        service->install();
-    else if(functional == "-u")
-        service->uninstall();
-
-    return service->getExitCode();
+int main(int argc, char *argv[]) {
+    std::shared_ptr<service::ServiceHandler> handler = std::make_shared<service::ServiceHandler>(std::make_shared<Runner>());
+    return handler->run(argc, argv);
 }

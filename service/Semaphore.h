@@ -2,30 +2,71 @@
 #define SERVICE_SEMAPHORE_H
 
 #include <mutex>
+#include <thread>
 
-class Semaphore {
-private:
-    std::timed_mutex sema;
-    bool isSemaAquired = false;
+namespace service {
 
-    long long getMilliseconds();
+	class Semaphore {
+	private:
+		std::timed_mutex sema;
+		bool isSemaAquired = false;
 
-public:
-    Semaphore() = default;
+		long long getMilliseconds() {
+			return std::chrono::duration_cast<std::chrono::milliseconds>(
+				std::chrono::system_clock::now().time_since_epoch()).count();
+		}
 
-    ~Semaphore();
+	public:
+		Semaphore() = default;
 
-    void acquire();
+		~Semaphore() {
+			if (this->isAquired())
+				this->release();
+		}
 
-    bool tryAcquire();
+		void acquire() {
+			this->sema.lock();
+			this->isSemaAquired = true;
+		}
 
-    bool tryAcquire(long long time);
+		bool tryAcquire() {
+			if (this->sema.try_lock()) {
+				this->isSemaAquired = true;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 
-    bool tryAcquire(long long timeoutMilliseconds, long long sleeptimeMillis);
+		bool tryAcquire(long long timeoutMilliseconds) {
+			return this->tryAcquire(timeoutMilliseconds, (timeoutMilliseconds / 10));
+		}
 
-    void release();
+		bool tryAcquire(long long timeoutMilliseconds, long long sleeptimeMillis) {
+			std::chrono::milliseconds duration(sleeptimeMillis);
+			long long endtime = this->getMilliseconds() + timeoutMilliseconds;
+			while (this->getMilliseconds() < endtime) {
+				if (this->tryAcquire())
+					return true;
+				else
+					std::this_thread::sleep_for(duration);
+			}
+			return this->tryAcquire();
+		}
 
-    bool isAquired();
-};
+		void release() {
+			if (this->isSemaAquired) {
+				this->isSemaAquired = false;
+				this->sema.unlock();
+			}
+		}
+
+		bool isAquired() {
+			return this->isSemaAquired;
+		}
+	};
+
+}
 
 #endif //SERVICE_ISERVICERUNNER_H

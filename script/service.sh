@@ -4,7 +4,7 @@
 SERVICE_DIR="YOUR_SERVICE_INSTALLATION_PATH"
 SERVICE_USER="USER_YOU_WANT_SERVICE_RUN_WITH"
 LOG_DIR="../log"
-APP_NAME="service"
+APP_NAME="serviceTest"
 
 usage() {
 	echo "Usage: `basename $0`: <start|stop|restart|status>"

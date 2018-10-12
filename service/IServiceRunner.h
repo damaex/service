@@ -8,32 +8,58 @@
 #include <Windows.h>
 #endif
 
-class IServiceRunner {
-private:
-    std::shared_ptr<ILog> p_log = nullptr;
-public:
-    explicit IServiceRunner(std::shared_ptr<ILog> log);
+namespace service {
 
-    virtual std::string getName() = 0;
-    virtual int Run() = 0;
+	class IServiceRunner {
+	private:
+		std::shared_ptr<ILog> p_log = nullptr;
 
-    virtual int OnPause();
-    virtual int OnContinue();
+	public:
+		explicit IServiceRunner(std::shared_ptr<ILog> log) : p_log(log) {}
 
-    virtual void OnStop();
-    virtual void OnShutdown();
+		virtual std::string getName() = 0;
 
-    virtual void OnInquire();
+		virtual int Run() = 0;
+
+		virtual int OnPause() {
+			return SERVICE_NO_ERROR;
+		}
+
+		virtual int OnContinue() {
+			return SERVICE_NO_ERROR;
+		}
+
+		virtual void OnStop() {}
+
+		virtual void OnShutdown() {
+			this->OnStop();
+		}
+
+		virtual void OnInquire() {}
 
 #ifdef _WIN32
-    virtual void OnUserControl(DWORD control);
-    virtual int Init(DWORD argc, LPTSTR* argv);
+		virtual void OnUserControl(DWORD control) {
+			this->getLog()->writeLine("OnUserControl: " + std::to_string(control));
+		}
+
+		virtual int Init(DWORD argc, LPTSTR* argv) {
+			this->getLog()->writeLine("Init Arguments: ");
+			for (DWORD i = 0; i < argc; i++)
+				this->getLog()->writeLine("i || " + std::string(argv[i]));
+
+			return SERVICE_NO_ERROR;
+		}
 #endif
 
-    virtual void Install();
-    virtual void UnInstall();
+		virtual void Install() {}
 
-    std::shared_ptr<ILog> getLog();
-};
+		virtual void UnInstall() {}
+
+		std::shared_ptr<ILog> getLog() {
+			return this->p_log;
+		}
+	};
+
+}
 
 #endif //SERVICE_ISERVICERUNNER_H
