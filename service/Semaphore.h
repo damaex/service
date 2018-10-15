@@ -34,9 +34,8 @@ namespace service {
 				this->isSemaAquired = true;
 				return true;
 			}
-			else {
-				return false;
-			}
+
+			return false;
 		}
 
 		bool tryAcquire(long long timeoutMilliseconds) {
@@ -46,12 +45,14 @@ namespace service {
 		bool tryAcquire(long long timeoutMilliseconds, long long sleeptimeMillis) {
 			std::chrono::milliseconds duration(sleeptimeMillis);
 			long long endtime = this->getMilliseconds() + timeoutMilliseconds;
+
 			while (this->getMilliseconds() < endtime) {
 				if (this->tryAcquire())
 					return true;
-				else
-					std::this_thread::sleep_for(duration);
+				
+				std::this_thread::sleep_for(duration);
 			}
+
 			return this->tryAcquire();
 		}
 

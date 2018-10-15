@@ -7,7 +7,7 @@ LOG_DIR="../log"
 APP_NAME="serviceTest"
 
 usage() {
-	echo "Usage: `basename $0`: <start|stop|restart|status>"
+	echo "Usage: `$APP_NAME $0`: <start|stop|restart|status>"
 	exit 1
 }
 

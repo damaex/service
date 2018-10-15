@@ -194,8 +194,7 @@ namespace service {
 			if (schSrv == NULL) {
 				this->p_err = static_cast<int>(::GetLastError());
 				ret = false;
-			}
-			else
+			} else
 				this->p_runner->Install(); //== overload to add registry entries if needed
 
 			//== All done, so pick up our toys and go home!
@@ -279,6 +278,7 @@ namespace service {
 					bResult = true;
 					::CloseServiceHandle(hService);
 				}
+
 				::CloseServiceHandle(hSCM);
 			}
 
