@@ -6,67 +6,67 @@
 
 namespace service {
 
-	class Semaphore {
-	private:
-		std::timed_mutex sema;
-		bool isSemaAquired = false;
+    class Semaphore {
+    private:
+        std::timed_mutex sema;
+        bool isSemaAquired = false;
 
-		long long getMilliseconds() {
-			return std::chrono::duration_cast<std::chrono::milliseconds>(
-				std::chrono::system_clock::now().time_since_epoch()).count();
-		}
+        long long getMilliseconds() {
+            return std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch()).count();
+        }
 
-	public:
-		Semaphore() = default;
+    public:
+        Semaphore() = default;
 
-		~Semaphore() {
-			if (this->isAquired())
-				this->release();
-		}
+        ~Semaphore() {
+            if (this->isAquired())
+                this->release();
+        }
 
-		void acquire() {
-			this->sema.lock();
-			this->isSemaAquired = true;
-		}
+        void acquire() {
+            this->sema.lock();
+            this->isSemaAquired = true;
+        }
 
-		bool tryAcquire() {
-			if (this->sema.try_lock()) {
-				this->isSemaAquired = true;
-				return true;
-			}
+        bool tryAcquire() {
+            if (this->sema.try_lock()) {
+                this->isSemaAquired = true;
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		bool tryAcquire(long long timeoutMilliseconds) {
-			return this->tryAcquire(timeoutMilliseconds, (timeoutMilliseconds / 10));
-		}
+        bool tryAcquire(long long timeoutMilliseconds) {
+            return this->tryAcquire(timeoutMilliseconds, (timeoutMilliseconds / 10));
+        }
 
-		bool tryAcquire(long long timeoutMilliseconds, long long sleeptimeMillis) {
-			std::chrono::milliseconds duration(sleeptimeMillis);
-			long long endtime = this->getMilliseconds() + timeoutMilliseconds;
+        bool tryAcquire(long long timeoutMilliseconds, long long sleeptimeMillis) {
+            std::chrono::milliseconds duration(sleeptimeMillis);
+            long long endtime = this->getMilliseconds() + timeoutMilliseconds;
 
-			while (this->getMilliseconds() < endtime) {
-				if (this->tryAcquire())
-					return true;
-				
-				std::this_thread::sleep_for(duration);
-			}
+            while (this->getMilliseconds() < endtime) {
+                if (this->tryAcquire())
+                    return true;
 
-			return this->tryAcquire();
-		}
+                std::this_thread::sleep_for(duration);
+            }
 
-		void release() {
-			if (this->isSemaAquired) {
-				this->isSemaAquired = false;
-				this->sema.unlock();
-			}
-		}
+            return this->tryAcquire();
+        }
 
-		bool isAquired() {
-			return this->isSemaAquired;
-		}
-	};
+        void release() {
+            if (this->isSemaAquired) {
+                this->isSemaAquired = false;
+                this->sema.unlock();
+            }
+        }
+
+        bool isAquired() {
+            return this->isSemaAquired;
+        }
+    };
 
 }
 

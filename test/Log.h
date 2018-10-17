@@ -72,8 +72,7 @@ private:
                 while (true) {
                     if (this->logFileExists(this->p_lastDate + " - " + std::to_string(i))) {
                         i++;
-                    }
-                    else {
+                    } else {
                         this->p_fileName = this->p_lastDate + " - " + std::to_string(i);
                         break;
                     }
@@ -84,8 +83,7 @@ private:
 
             this->p_out.open(this->getLogFilePathForDate(this->p_fileName), std::ios::app);
 
-        }
-        else {
+        } else {
 
             //check while running for new day
             if (this->p_lastDate != this->getCurrentDate()) {
@@ -125,7 +123,7 @@ private:
         return full.substr(0, full.find_last_of("\\/"));
 #else
         char dest[PATH_MAX];
-        memset(dest,0,sizeof(dest)); // readlink does not null terminate!
+        memset(dest, 0, sizeof(dest)); // readlink does not null terminate!
         if (readlink("/proc/self/exe", dest, PATH_MAX) == -1) {
             std::cout << "could not get own path" << std::endl;
             return "";

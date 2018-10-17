@@ -10,82 +10,95 @@
 #define SERVICE_NO_ERROR    0
 #define SERVICE_ERROR       1
 
+#ifdef __GNUC__
+#   include <features.h>
+#   if __GNUC_PREREQ(5, 0)
+#       define SERVICE_HAS_PUT_TIME    1
+#   else
+#       define SERVICE_HAS_PUT_TIME    0
+#   endif
+#else
+#   define SERVICE_HAS_PUT_TIME    1
+#endif
+
 namespace service {
 
-	class ILog {
-	private:
-		Semaphore p_semaphore;
+    class ILog {
+    private:
+        Semaphore p_semaphore;
 
-	protected:
-		virtual void writeOut(const std::string &text) {
-			std::cout << text;
-		}
+    protected:
+        virtual void writeOut(const std::string &text) {
+            std::cout << text;
+        }
 
-	public:
-		/**
-		 * get system style new line string
-		 */
-		std::string getNewLine() {
+    public:
+        /**
+         * get system style new line string
+         */
+        std::string getNewLine() {
 #ifdef _WIN32
-			return "\r\n";
+            return "\r\n";
 #else
-			return "\n";
+            return "\n";
 #endif
-		}
+        }
 
-		std::string getCurrentTimeAndDate() {
-			return this->getCurrentTime("%Y-%m-%d %H:%M:%S");
-		}
+        std::string getCurrentTimeAndDate() {
+            return this->getCurrentTime("%Y-%m-%d %H:%M:%S");
+        }
 
-		std::string getCurrentDate() {
-			return this->getCurrentTime("%Y-%m-%d");
-		}
+        std::string getCurrentDate() {
+            return this->getCurrentTime("%Y-%m-%d");
+        }
 
-		std::string getCurrentTime(const std::string &mod) {
-			auto now = std::chrono::system_clock::now();
-			auto in_time_t = std::chrono::system_clock::to_time_t(now);
+        std::string getCurrentTime(const std::string &mod) {
+            auto now = std::chrono::system_clock::now();
+            auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
-			/*std::stringstream ss;
-			ss << std::put_time(std::localtime(&in_time_t), mod.c_str());
-			return ss.str();*/
-
-			char foo[24];
-			struct tm timeinfo;
-
+            struct tm timeinfo;
 #ifdef _WIN32
-			localtime_s(&timeinfo, &in_time_t);
+            localtime_s(&timeinfo, &in_time_t);
 #else
-			timeinfo = *localtime(&in_time_t);
+            timeinfo = *localtime(&in_time_t);
 #endif
 
-			if (0 < strftime(foo, sizeof(foo), mod.c_str(), &timeinfo))
-				return std::string(foo);
-			
-			return "";
-		}
+#if defined SERVICE_HAS_PUT_TIME && SERVICE_HAS_PUT_TIME
+            std::stringstream ss;
+            ss << std::put_time(&timeinfo, mod.c_str());
+            return ss.str();
+#else
+            char foo[24];
 
-		void writeLine(const std::string &text) {
-			this->write(text + this->getNewLine());
-		}
+            if (0 < strftime(foo, sizeof(foo), mod.c_str(), &timeinfo))
+                return std::string(foo);
+            
+            return "";
+#endif
+        }
 
-		void write(const std::string &text) {
-			this->p_semaphore.acquire();
-			this->writeOut(this->getCurrentTimeAndDate() + " || " + text);
-			this->p_semaphore.release();
-		}
+        void writeLine(const std::string &text) {
+            this->write(text + this->getNewLine());
+        }
 
-		void writeError(const std::string &className, const std::string &functionName, const std::string &errorText) {
-			this->writeLine(className + " :: " + functionName + " :: " + errorText);
-		}
+        void write(const std::string &text) {
+            this->p_semaphore.acquire();
+            this->writeOut(this->getCurrentTimeAndDate() + " || " + text);
+            this->p_semaphore.release();
+        }
 
-		void writeError(const std::string &className, const std::string &functionName, int errorCode) {
-			this->writeError(className, functionName, std::to_string(errorCode));
-		}
+        void writeError(const std::string &className, const std::string &functionName, const std::string &errorText) {
+            this->writeLine(className + " :: " + functionName + " :: " + errorText);
+        }
 
-		void writeError(const std::string &className, const std::string &functionName, std::exception &e) {
-			this->writeError(className, functionName, e.what());
-		}
-	};
+        void writeError(const std::string &className, const std::string &functionName, int errorCode) {
+            this->writeError(className, functionName, std::to_string(errorCode));
+        }
+
+        void writeError(const std::string &className, const std::string &functionName, std::exception &e) {
+            this->writeError(className, functionName, e.what());
+        }
+    };
 
 }
 

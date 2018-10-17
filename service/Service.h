@@ -18,7 +18,7 @@ namespace service {
     private:
         std::shared_ptr<IServiceRunner> p_runner;
 #ifndef _WIN32
-        static Service* p_self;
+        static Service *p_self;
 #endif
         int p_err = 0;
 
@@ -147,8 +147,9 @@ namespace service {
             return message;
         }
 #else
+
         explicit Service(std::shared_ptr<IServiceRunner> runner)
-            : p_runner(std::move(runner)) {
+                : p_runner(std::move(runner)) {
             Service::p_self = this;
             this->setSignalHandlers();
         }
@@ -158,11 +159,13 @@ namespace service {
         }
 
         static void signalHandler(int signum) {
-            Service::p_self->p_runner->getLog()->writeLine("Interrupt signal (" + std::to_string(signum) + ") received.");
+            Service::p_self->p_runner->getLog()->writeLine(
+                    "Interrupt signal (" + std::to_string(signum) + ") received.");
 
             // shutdown service
             Service::p_self->p_runner->OnShutdown();
         }
+
 #endif
 
         ~Service() {
@@ -387,7 +390,7 @@ namespace service {
     };
 
 #ifndef _WIN32
-    Service* Service::p_self = nullptr;
+    Service *Service::p_self = nullptr;
 #endif
 }
 
