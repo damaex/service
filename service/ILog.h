@@ -18,7 +18,15 @@
 #       define SERVICE_HAS_PUT_TIME    0
 #   endif
 #else
-#   define SERVICE_HAS_PUT_TIME    1
+#   if defined(__clang__)
+#       if __clang_major__ >= 6
+#           define SERVICE_HAS_PUT_TIME    1
+#       else
+#           define SERVICE_HAS_PUT_TIME    0
+#       endif
+#   else
+#       define SERVICE_HAS_PUT_TIME    1
+#   endif
 #endif
 
 namespace service {

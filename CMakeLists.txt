@@ -28,5 +28,4 @@ add_executable(serviceTest ${TEST_FILES} ${SERVICE_FILES})
 source_group("service"            FILES ${SERVICE_FILES})
 source_group("test"            FILES ${TEST_FILES})
 
-target_link_libraries(serviceTest
-        Threads::Threads)
+target_link_libraries(serviceTest Threads::Threads)
