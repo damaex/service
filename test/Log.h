@@ -33,8 +33,8 @@ private:
 #endif
                 std::cout << "Log Folder could not be created" << std::endl;
             }
-            }
         }
+    }
 
     std::string getLogFolder() {
         return this->getExecutablePath() + this->getPathDelimeter() + this->p_logFolderName + this->getPathDelimeter();
@@ -46,11 +46,9 @@ private:
 
         if (stat(this->getLogFolder().c_str(), &info) != 0) {
             std::cout << "cannot access " << this->getLogFolder() << std::endl;
-        }
-        else if (info.st_mode & S_IFDIR) {  // S_ISDIR() doesn't exist on my windows
+        } else if (info.st_mode & S_IFDIR) {  // S_ISDIR() doesn't exist on my windows
             ret = true;
-        }
-        else {
+        } else {
             std::cout << this->getLogFolder() << " is no directory" << std::endl;
         }
 
@@ -80,8 +78,7 @@ private:
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 this->p_fileName = this->p_lastDate;
             }
 

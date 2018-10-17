@@ -60,8 +60,8 @@ namespace service {
 
 			if (0 < strftime(foo, sizeof(foo), mod.c_str(), &timeinfo))
 				return std::string(foo);
-			else
-				return "";
+			
+			return "";
 		}
 
 		void writeLine(const std::string &text) {

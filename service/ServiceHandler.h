@@ -6,13 +6,11 @@
 std::shared_ptr<service::Service> server = nullptr;
 
 #ifdef _WIN32
-void WINAPI serviceMain(DWORD ac, LPTSTR* av)
-{
+void WINAPI serviceMain(DWORD ac, LPTSTR* av) {
 	server->service(ac, av);
 }
 
-void WINAPI serviceControl(DWORD opcode)
-{
+void WINAPI serviceControl(DWORD opcode) {
 	server->control(opcode);
 }
 #endif

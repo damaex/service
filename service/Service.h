@@ -64,7 +64,7 @@ namespace service {
         }
 
         int service(DWORD argc, LPTSTR* argv) {
-            this->ph_stat = RegisterServiceCtrlHandler(TEXT(this->p_runner->getName().c_str()), this->p_fpSrvControl);
+            this->ph_stat = ::RegisterServiceCtrlHandler(TEXT(this->p_runner->getName().c_str()), this->p_fpSrvControl);
             if ((SERVICE_STATUS_HANDLE)0 == this->ph_stat) {
                 this->p_err = static_cast<int>(::GetLastError());
                 return this->p_err;
@@ -181,7 +181,7 @@ namespace service {
                 return true;
 
             //== get the service manager handle
-            SC_HANDLE schSCMgr = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+            SC_HANDLE schSCMgr = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
             if (schSCMgr == NULL) {
                 this->p_err = static_cast<int>(::GetLastError());
                 return false;
@@ -193,7 +193,7 @@ namespace service {
 
 
             //== install the service
-            SC_HANDLE schSrv = CreateService(
+            SC_HANDLE schSrv = ::CreateService(
                 schSCMgr,
                 this->p_runner->getName().c_str(),
                 this->p_runner->getName().c_str(),
@@ -213,13 +213,12 @@ namespace service {
             if (schSrv == NULL) {
                 this->p_err = static_cast<int>(::GetLastError());
                 ret = false;
-            }
-            else
+            } else
                 this->p_runner->Install(); //== overload to add registry entries if needed
 
             //== All done, so pick up our toys and go home!
-            CloseServiceHandle(schSrv);
-            CloseServiceHandle(schSCMgr);
+            ::CloseServiceHandle(schSrv);
+            ::CloseServiceHandle(schSCMgr);
 
             return ret;
 #else
@@ -242,23 +241,23 @@ namespace service {
                 return true;
 
             //== get the service manager handle
-            SC_HANDLE schSCMgr = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+            SC_HANDLE schSCMgr = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
             if (schSCMgr == NULL) {
                 this->p_err = static_cast<int>(::GetLastError());
                 return false;
             }
 
             //== Get the service handle
-            SC_HANDLE schSrv = OpenService(schSCMgr, this->p_runner->getName().c_str(), DELETE);
+            SC_HANDLE schSrv = ::OpenService(schSCMgr, this->p_runner->getName().c_str(), DELETE);
             if (schSrv == NULL) {
                 this->p_err = static_cast<int>(::GetLastError());
-                CloseServiceHandle(schSCMgr);
+                ::CloseServiceHandle(schSCMgr);
                 return false;
             }
 
             //== Now delete the service
             bool bRetval = true;
-            if (!DeleteService(schSrv)) {
+            if (!::DeleteService(schSrv)) {
                 bRetval = false;
                 this->p_err = static_cast<int>(::GetLastError());
             }
@@ -267,8 +266,8 @@ namespace service {
             this->p_runner->UnInstall();
 
             //== Put away toys and go home!
-            CloseServiceHandle(schSrv);
-            CloseServiceHandle(schSCMgr);
+            ::CloseServiceHandle(schSrv);
+            ::CloseServiceHandle(schSCMgr);
 
             return bRetval;
 #else
@@ -298,6 +297,7 @@ namespace service {
                     bResult = true;
                     ::CloseServiceHandle(hService);
                 }
+
                 ::CloseServiceHandle(hSCM);
             }
 
@@ -324,7 +324,7 @@ namespace service {
             this->p_dispatchTable[0].lpServiceProc = this->p_fpSrvMain; //   are pointers
 
             //== starts the service
-            if (!StartServiceCtrlDispatcher(this->p_dispatchTable)) {
+            if (!::StartServiceCtrlDispatcher(this->p_dispatchTable)) {
                 this->p_err = static_cast<int>(::GetLastError());
                 this->p_runner->getLog()->writeLine(this->getErrorAsString(this->p_err));
                 return this->p_err;
