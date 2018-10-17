@@ -22,6 +22,7 @@ public:
             this->getLog()->writeError("Runner", "Run", i++);
         }
 
+        this->getLog()->writeLine("Shutdown called");
         return EXIT_SUCCESS;
     }
 

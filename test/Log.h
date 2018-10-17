@@ -7,6 +7,9 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+#else
+#include <climits>
+#include <cstring>
 #endif
 
 #include "ILog.h"
@@ -124,8 +127,15 @@ private:
 
         return full.substr(0, full.find_last_of("\\/"));
 #else
-        //TODO unix
-        return "";
+        char dest[PATH_MAX];
+        memset(dest,0,sizeof(dest)); // readlink does not null terminate!
+        if (readlink("/proc/self/exe", dest, PATH_MAX) == -1) {
+            std::cout << "could not get own path" << std::endl;
+            return "";
+        }
+
+        std::string exePath = std::string(dest);
+        return exePath.substr(0, exePath.find_last_of('/')); //remove executable
 #endif
     }
 

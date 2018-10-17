@@ -24,8 +24,8 @@ namespace service {
 		std::shared_ptr<IServiceRunner> p_runner = nullptr;
 
 	public:
-		ServiceHandler(std::shared_ptr<IServiceRunner> runner)
-			: p_runner(runner) {}
+		explicit ServiceHandler(std::shared_ptr<IServiceRunner> runner)
+			: p_runner(std::move(runner)) {}
 
 		int run(int argc, char *argv[]) {
 #ifdef _WIN32

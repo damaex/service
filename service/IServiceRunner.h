@@ -15,7 +15,8 @@ namespace service {
 		std::shared_ptr<ILog> p_log = nullptr;
 
 	public:
-		explicit IServiceRunner(std::shared_ptr<ILog> log) : p_log(log) {}
+		explicit IServiceRunner(std::shared_ptr<ILog> log)
+			: p_log(std::move(log)) {}
 
 		virtual std::string getName() = 0;
 
