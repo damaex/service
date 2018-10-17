@@ -10,7 +10,7 @@
 #define SERVICE_NO_ERROR    0
 #define SERVICE_ERROR       1
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 #   include <features.h>
 #   if __GNUC_PREREQ(5, 0)
 #       define SERVICE_HAS_PUT_TIME    1
