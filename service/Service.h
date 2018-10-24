@@ -17,9 +17,6 @@ namespace service {
     class Service {
     private:
         std::shared_ptr<IServiceRunner> p_runner;
-#ifndef _WIN32
-        static Service *p_self;
-#endif
         int p_err = 0;
 
 #ifdef _WIN32
@@ -33,6 +30,39 @@ namespace service {
         SERVICE_TABLE_ENTRY     p_dispatchTable[2];
         SERVICE_STATUS          p_stat;
         SERVICE_STATUS_HANDLE   ph_stat;
+#else
+        enum EInitSystem {
+            ERROR = 0,
+            UPSTART = 1,
+            SYSTEMD = 2,
+            SYSV = 3,
+            LAUNCHD = 4
+        };
+
+        static Service *p_self;
+
+        std::string exec(const std::string &cmd) {
+            std::array<char, 128> buffer;
+            std::string result;
+            std::shared_ptr<FILE> pipe(popen(cmd.c_str(), "r"), pclose);
+            if (!pipe)
+                throw std::runtime_error("popen() failed!");
+
+            while (!feof(pipe.get())) {
+                if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
+                    result += buffer.data();
+            }
+
+            return result;
+        }
+
+        EInitSystem getInitSystem() {
+            return (EInitSystem)std::stoi(this->exec("if [[ `/sbin/init --version` =~ upstart ]]; then echo 1;\n"
+                                                     "elif [[ `systemctl` =~ -\\.mount ]]; then echo 2;\n"
+                                                     "elif [[ -f /etc/init.d/cron && ! -h /etc/init.d/cron ]]; then echo 3;\n"
+                                                     "elif [[ $(ps 1) =~ 'launchd' ]]; then echo 4;\n"
+                                                     "else echo 0; fi"));
+        }
 #endif
 
     public:
@@ -119,7 +149,6 @@ namespace service {
                 SetServiceStatus(this->ph_stat, &this->p_stat);
                 break;
             };
-            return;
         }
 
         void ChangeStatus(DWORD state, DWORD checkpoint = (DWORD)0, DWORD waithint = (DWORD)0) {
@@ -178,11 +207,11 @@ namespace service {
          * @return true - if installation worked / false - if not
          */
         bool install() {
-#ifdef _WIN32
             //== check to see if we are already installled
             if (this->isInstalled())
                 return true;
 
+#ifdef _WIN32
             //== get the service manager handle
             SC_HANDLE schSCMgr = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
             if (schSCMgr == NULL) {
@@ -229,7 +258,7 @@ namespace service {
             //check if init or systemd
             //install accordingly
             //example: http://orientdb.com/docs/2.1/Unix-Service.html
-            return false;
+            return false; //TODO remove after implementing each init system
 #endif
         }
 
@@ -239,10 +268,10 @@ namespace service {
          * @return true - if uninstallation worked / false - if not
          */
         bool uninstall() {
-#ifdef _WIN32
             if (!this->isInstalled())
                 return true;
 
+#ifdef _WIN32
             //== get the service manager handle
             SC_HANDLE schSCMgr = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
             if (schSCMgr == NULL) {
@@ -274,7 +303,7 @@ namespace service {
 
             return bRetval;
 #else
-            //TODO: Unix
+            //TODO Unix
             //check if init or systemd
             //uninstall accordingly
             //example: http://orientdb.com/docs/2.1/Unix-Service.html
@@ -306,10 +335,23 @@ namespace service {
 
             return bResult;
 #else
-            //TODO: Unix
+            //TODO Unix
             //check if init or systemd
             //example: http://orientdb.com/docs/2.1/Unix-Service.html
             //get if installed in the system
+            switch (this->getInitSystem()) {
+                case UPSTART:
+                    break;
+                case SYSTEMD:
+                    break;
+                case SYSV:
+                    break;
+                case LAUNCHD:
+                    break;
+                default: //ERROR
+                    return false;
+            }
+
             return false;
 #endif
         }

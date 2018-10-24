@@ -71,7 +71,7 @@ namespace service {
             timeinfo = *localtime(&in_time_t);
 #endif
 
-#if defined SERVICE_HAS_PUT_TIME && SERVICE_HAS_PUT_TIME
+#if SERVICE_HAS_PUT_TIME == 1
             std::stringstream ss;
             ss << std::put_time(&timeinfo, mod.c_str());
             return ss.str();

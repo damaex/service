@@ -143,7 +143,7 @@ private:
     }
 
 public:
-    Log() {
+    Log() : ILog() {
         this->checkLogFile();
     }
 };
