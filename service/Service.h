@@ -41,6 +41,10 @@ namespace service {
 
         static Service *p_self;
 
+        void writeLog(const std::string &text) {
+            this->p_runner->getLog()->writeLine(text);
+        }
+
         std::string exec(const std::string &cmd) {
             std::array<char, 128> buffer;
             std::string result;
@@ -317,8 +321,10 @@ namespace service {
          * @return true - if installed / false - if not
          */
         bool isInstalled() {
+            std::string initLog = "Init System: ";
 #ifdef _WIN32
             bool bResult = false;
+            this->writeLog(initLog + "Windows Service");
 
             // Open the Service Control Manager
             SC_HANDLE hSCM = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
@@ -341,14 +347,19 @@ namespace service {
             //get if installed in the system
             switch (this->getInitSystem()) {
                 case UPSTART:
+                    this->writeLog(initLog + "upstart");
                     break;
                 case SYSTEMD:
+                    this->writeLog(initLog + "systemd");
                     break;
                 case SYSV:
+                    this->writeLog(initLog + "sysv");
                     break;
                 case LAUNCHD:
+                    this->writeLog(initLog + "launchd (osx)");
                     break;
                 default: //ERROR
+                    this->writeLog(initLog + "could not determine");
                     return false;
             }
 
