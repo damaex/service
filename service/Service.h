@@ -20,6 +20,10 @@ namespace service {
         std::shared_ptr<IServiceRunner> p_runner;
         int p_err = 0;
 
+        void writeLog(const std::string &text) {
+            this->p_runner->getLog()->writeLine(text);
+        }
+
 #ifdef _WIN32
         bool p_isStarted;
         bool p_isPaused;
@@ -41,10 +45,6 @@ namespace service {
         };
 
         static Service *p_self;
-
-        void writeLog(const std::string &text) {
-            this->p_runner->getLog()->writeLine(text);
-        }
 
         std::string exec(const std::string &cmd) {
             std::array<char, 128> buffer;
