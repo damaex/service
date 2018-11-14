@@ -8,8 +8,8 @@ namespace service {
 
     class Semaphore {
     private:
-        std::timed_mutex sema;
-        bool isSemaAquired = false;
+        std::timed_mutex semaphore_mutex;
+        bool isSemaphoreAcquired = false;
 
         long long getMilliseconds() {
             return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -20,18 +20,18 @@ namespace service {
         Semaphore() = default;
 
         ~Semaphore() {
-            if (this->isAquired())
+            if (this->isAcquired())
                 this->release();
         }
 
         void acquire() {
-            this->sema.lock();
-            this->isSemaAquired = true;
+            this->semaphore_mutex.lock();
+            this->isSemaphoreAcquired = true;
         }
 
         bool tryAcquire() {
-            if (this->sema.try_lock()) {
-                this->isSemaAquired = true;
+            if (this->semaphore_mutex.try_lock()) {
+                this->isSemaphoreAcquired = true;
                 return true;
             }
 
@@ -57,17 +57,17 @@ namespace service {
         }
 
         void release() {
-            if (this->isSemaAquired) {
-                this->isSemaAquired = false;
-                this->sema.unlock();
+            if (this->isSemaphoreAcquired) {
+                this->isSemaphoreAcquired = false;
+                this->semaphore_mutex.unlock();
             }
         }
 
-        bool isAquired() {
-            return this->isSemaAquired;
+        bool isAcquired() {
+            return this->isSemaphoreAcquired;
         }
     };
 
 }
 
-#endif //SERVICE_ISERVICERUNNER_H
+#endif //SERVICE_SEMAPHORE_H

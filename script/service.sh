@@ -13,7 +13,7 @@ usage() {
 
 start() {
 	status
-	if [ $PID -gt 0 ]
+	if [[ $PID -gt 0 ]]
 	then
 		echo "Service daemon was already started. PID: $PID"
 		return $PID
@@ -26,7 +26,7 @@ start() {
 
 stop() {
 	status
-	if [ $PID -eq 0 ]
+	if [[ $PID -eq 0 ]]
 	then
 		echo "Service daemon is already not running"
 		return 0
@@ -39,7 +39,7 @@ stop() {
 
 status() {
 	PID=` ps auxw | grep $APP_NAME | grep -v grep | awk '{print $2}'`
-	if [ "x$PID" = "x" ]
+	if [[ "x$PID" = "x" ]]
 	then
 		PID=0
 	fi
@@ -48,29 +48,29 @@ status() {
 	return $PID
 }
 
-if [ "x$1" = "xstart" ]
+if [[ "x$1" = "xstart" ]]
 then
 	start
 	exit 0
 fi
 
-if [ "x$1" = "xstop" ]
+if [[ "x$1" = "xstop" ]]
 then
 	stop
 	exit 0
 fi
 
-if [ "x$1" = "xrestart" ]
+if [[ "x$1" = "xrestart" ]]
 then
 	stop
 	start
 	exit 0
 fi
 
-if [ "x$1" = "xstatus" ]
+if [[ "x$1" = "xstatus" ]]
 then
 	status
-	if [ $PID -gt 0 ]
+	if [[ $PID -gt 0 ]]
 	then
 		echo "Service daemon is running with PID: $PID"
 		exit 0

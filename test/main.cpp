@@ -32,7 +32,6 @@ public:
 };
 
 int main(int argc, char *argv[]) {
-    std::shared_ptr<service::ServiceHandler> handler = std::make_shared<service::ServiceHandler>(
-            std::make_shared<Runner>());
+    std::shared_ptr<service::ServiceHandler> handler = std::make_shared<service::ServiceHandler>(std::make_shared<Runner>());
     return handler->run(argc, argv);
 }

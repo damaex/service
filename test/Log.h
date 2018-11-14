@@ -37,7 +37,7 @@ private:
     }
 
     std::string getLogFolder() {
-        return this->getExecutablePath() + this->getPathDelimeter() + this->p_logFolderName + this->getPathDelimeter();
+        return this->getExecutablePath() + this->getPathDelimiter() + this->p_logFolderName + this->getPathDelimiter();
     }
 
     bool logFolderExists() {
@@ -99,7 +99,7 @@ private:
         //TODO: configurable how many log files get stored
     }
 
-    std::string getPathDelimeter() {
+    std::string getPathDelimiter() {
 #ifdef _WIN32
         return "\\";
 #else
