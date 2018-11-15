@@ -8,8 +8,10 @@
 #ifdef _WIN32
 #include <Windows.h>
 #else
+
 #include <climits>
 #include <cstring>
+
 #endif
 
 #include "ILog.h"
@@ -23,6 +25,9 @@ private:
     std::string p_lastDate;
     std::string p_fileEnding = "log";
 
+    /**
+     * create the log folder if it doesn't exists
+     */
     void createLogsFolder() {
         if (!this->logFolderExists()) {
             std::cout << "log folder not available: create" << std::endl;
@@ -36,10 +41,18 @@ private:
         }
     }
 
+    /**
+     * get the log folder path
+     * @return the full path to the log folder
+     */
     std::string getLogFolder() {
         return this->getExecutablePath() + this->getPathDelimiter() + this->p_logFolderName + this->getPathDelimiter();
     }
 
+    /**
+     * check if log folder exists
+     * @return true - if exists / false - if not exists
+     */
     bool logFolderExists() {
         struct stat info;
         bool ret = false;
@@ -55,6 +68,11 @@ private:
         return ret;
     }
 
+    /**
+     * check if log file exists
+     * @param date the date for the log file
+     * @return true - if exists / false - if not exists
+     */
     bool logFileExists(const std::string &date) {
         std::string path = this->getLogFilePathForDate(date);
 
@@ -99,6 +117,10 @@ private:
         //TODO: configurable how many log files get stored
     }
 
+    /**
+     * get system dependent path delimiter
+     * @return the path delimmiter as string
+     */
     std::string getPathDelimiter() {
 #ifdef _WIN32
         return "\\";
@@ -111,6 +133,10 @@ private:
         return this->getLogFolder() + date + "." + this->p_fileEnding;
     }
 
+    /**
+     * get the path of this executable
+     * @return the full path of this executable
+     */
     std::string getExecutablePath() {
 #ifdef _WIN32
         HMODULE hModule = GetModuleHandleW(NULL);

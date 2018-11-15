@@ -36,6 +36,10 @@ namespace service {
         Semaphore p_semaphore;
 
     protected:
+        /**
+         * write to the log
+         * @param text the message to write
+         */
         virtual void writeOut(const std::string &text) {
             std::cout << text;
         }
@@ -52,14 +56,27 @@ namespace service {
 #endif
         }
 
+        /**
+         * get the current date and time
+         * @return YYYY-MM-DD HH:MM:SS
+         */
         std::string getCurrentTimeAndDate() {
             return this->getCurrentTime("%Y-%m-%d %H:%M:%S");
         }
 
+        /**
+         * get the current date
+         * @return YYYY-MM-DD
+         */
         std::string getCurrentDate() {
             return this->getCurrentTime("%Y-%m-%d");
         }
 
+        /**
+         * get the current time with modifier
+         * @param mod the modifier with time and date
+         * @return time and date as defined by modifier
+         */
         std::string getCurrentTime(const std::string &mod) {
             auto now = std::chrono::system_clock::now();
             auto in_time_t = std::chrono::system_clock::to_time_t(now);
@@ -85,24 +102,50 @@ namespace service {
 #endif
         }
 
+        /**
+         * write message to log with line ending
+         * @param text the message
+         */
         void writeLine(const std::string &text) {
             this->write(text + this->getNewLine());
         }
 
+        /**
+         * write message to log
+         * @param text the message
+         */
         void write(const std::string &text) {
             this->p_semaphore.acquire();
             this->writeOut(this->getCurrentTimeAndDate() + " || " + text);
             this->p_semaphore.release();
         }
 
+        /**
+         * write error to log
+         * @param className the class the error appeared in
+         * @param functionName the function the error appeared in
+         * @param errorText the error message
+         */
         void writeError(const std::string &className, const std::string &functionName, const std::string &errorText) {
             this->writeLine(className + " :: " + functionName + " :: " + errorText);
         }
 
+        /**
+         * write error to log
+         * @param className the class the error appeared in
+         * @param functionName the function the error appeared in
+         * @param errorCode the error code
+         */
         void writeError(const std::string &className, const std::string &functionName, int errorCode) {
             this->writeError(className, functionName, std::to_string(errorCode));
         }
 
+        /**
+         * write error to log
+         * @param className the class the error appeared in
+         * @param functionName the function the error appeared in
+         * @param e the exception
+         */
         void writeError(const std::string &className, const std::string &functionName, std::exception &e) {
             this->writeError(className, functionName, e.what());
         }

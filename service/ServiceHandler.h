@@ -25,6 +25,12 @@ namespace service {
         explicit ServiceHandler(std::shared_ptr<IServiceRunner> runner)
                 : p_runner(std::move(runner)) {}
 
+        /**
+         * the main handle run
+         * @param argc argument count
+         * @param argv arguments
+         * @return the exit code after the service finished
+         */
         int run(int argc, char *argv[]) {
 #ifdef _WIN32
             server = std::make_shared<Service>(this->p_runner, serviceMain, serviceControl);

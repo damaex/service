@@ -20,6 +20,10 @@ namespace service {
         std::shared_ptr<IServiceRunner> p_runner;
         int p_err = 0;
 
+        /**
+         * write message to log
+         * @param text the message to log
+         */
         void writeLog(const std::string &text) {
             this->p_runner->getLog()->writeLine(text);
         }
@@ -46,6 +50,11 @@ namespace service {
 
         static Service *p_self;
 
+        /**
+         * execute command on the system shell
+         * @param cmd the command
+         * @return the response
+         */
         std::string exec(const std::string &cmd) {
             std::array<char, 128> buffer;
             std::string result;
@@ -61,13 +70,18 @@ namespace service {
             return result;
         }
 
+        /**
+         * get the actual init system
+         * @return the init system
+         */
         EInitSystem getInitSystem() {
-            return (EInitSystem)std::stoi(this->exec("if [[ `/sbin/init --version` =~ upstart ]]; then echo 1;\n"
-                                                     "elif [[ `systemctl` =~ -\\.mount ]]; then echo 2;\n"
-                                                     "elif [[ -f /etc/init.d/cron && ! -h /etc/init.d/cron ]]; then echo 3;\n"
-                                                     "elif [[ $(ps 1) =~ 'launchd' ]]; then echo 4;\n"
-                                                     "else echo 0; fi"));
+            return (EInitSystem) std::stoi(this->exec("if [[ `/sbin/init --version` =~ upstart ]]; then echo 1;\n"
+                                                      "elif [[ `systemctl` =~ -\\.mount ]]; then echo 2;\n"
+                                                      "elif [[ -f /etc/init.d/cron && ! -h /etc/init.d/cron ]]; then echo 3;\n"
+                                                      "elif [[ $(ps 1) =~ 'launchd' ]]; then echo 4;\n"
+                                                      "else echo 0; fi"));
         }
+
 #endif
 
     public:
@@ -188,10 +202,18 @@ namespace service {
             this->setSignalHandlers();
         }
 
+        /**
+         * set unix signal handlers
+         * - sigterm
+         */
         void setSignalHandlers() {
             std::signal(SIGTERM, Service::signalHandler);
         }
 
+        /**
+         * system signal handler callback
+         * @param signum signal
+         */
         static void signalHandler(int signum) {
             Service::p_self->p_runner->getLog()->writeLine(
                     "Interrupt signal (" + std::to_string(signum) + ") received.");
@@ -424,7 +446,6 @@ namespace service {
 
         /**
          * get the services exit code
-         *
          * @return the exit code after the service finished
          */
         int getExitCode() {
@@ -438,6 +459,10 @@ namespace service {
 #endif
         }
 
+        /**
+         * get the last error
+         * @return the error code
+         */
         int getLastError() {
             return this->p_err;
         }
