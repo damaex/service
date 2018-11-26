@@ -1,7 +1,7 @@
 #ifndef SERVICE_SERVICE_H
 #define SERVICE_SERVICE_H
 
-#include "IServiceRunner.h"
+#include "IServiceRunner.hpp"
 
 #ifndef _WIN32
 

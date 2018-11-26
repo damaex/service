@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
-#include "Semaphore.h"
+#include "Semaphore.hpp"
 
 #define SERVICE_NO_ERROR    0
 #define SERVICE_ERROR       1

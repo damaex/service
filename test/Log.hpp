@@ -14,7 +14,7 @@
 
 #endif
 
-#include "ILog.h"
+#include "ILog.hpp"
 
 class Log : public service::ILog {
 private:

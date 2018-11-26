@@ -13,14 +13,14 @@ find_package(Threads REQUIRED)
 include_directories(${CMAKE_SOURCE_DIR}/service)
 
 set(SERVICE_FILES
-    ${CMAKE_SOURCE_DIR}/service/ILog.h
-    ${CMAKE_SOURCE_DIR}/service/IServiceRunner.h
-    ${CMAKE_SOURCE_DIR}/service/Semaphore.h
-    ${CMAKE_SOURCE_DIR}/service/Service.h
-    ${CMAKE_SOURCE_DIR}/service/ServiceHandler.h)
+    ${CMAKE_SOURCE_DIR}/service/ILog.hpp
+    ${CMAKE_SOURCE_DIR}/service/IServiceRunner.hpp
+    ${CMAKE_SOURCE_DIR}/service/Semaphore.hpp
+    ${CMAKE_SOURCE_DIR}/service/Service.hpp
+    ${CMAKE_SOURCE_DIR}/service/ServiceHandler.hpp)
 
 set(TEST_FILES
-    ${CMAKE_SOURCE_DIR}/test/Log.h
+    ${CMAKE_SOURCE_DIR}/test/Log.hpp
     ${CMAKE_SOURCE_DIR}/test/main.cpp)
 
 add_executable(serviceTest ${TEST_FILES} ${SERVICE_FILES})

@@ -1,5 +1,5 @@
-#include "ServiceHandler.h"
-#include "Log.h"
+#include "ServiceHandler.hpp"
+#include "Log.hpp"
 
 class Runner : public service::IServiceRunner {
 private:

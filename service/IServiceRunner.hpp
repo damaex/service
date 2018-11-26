@@ -1,7 +1,7 @@
 #ifndef SERVICE_ISERVICERUNNER_H
 #define SERVICE_ISERVICERUNNER_H
 
-#include "ILog.h"
+#include "ILog.hpp"
 #include <memory>
 
 #ifdef _WIN32

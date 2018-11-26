@@ -1,7 +1,7 @@
 #ifndef SERVICE_SERVICEHANDLER_H
 #define SERVICE_SERVICEHANDLER_H
 
-#include "Service.h"
+#include "Service.hpp"
 
 std::shared_ptr<service::Service> server = nullptr;
 
