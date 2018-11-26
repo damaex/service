@@ -6,7 +6,7 @@
 #ifndef _WIN32
 
 #include <sys/stat.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 #include <csignal>
 #include <array>

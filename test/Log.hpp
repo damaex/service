@@ -119,7 +119,7 @@ private:
 
     /**
      * get system dependent path delimiter
-     * @return the path delimmiter as string
+     * @return the path delimiter as string
      */
     std::string getPathDelimiter() {
 #ifdef _WIN32
